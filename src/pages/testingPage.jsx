@@ -1,29 +1,30 @@
+
 import { useState } from "react";
+import toast from "react-hot-toast";
+import MediaUpload from "../utilis/mediaUpload";
+
 
 export default function TestingPage() {
-  const [number, setNumber] = useState(0);
+  const [file, setFile] = useState(null);
 
+  
+  function handleFileUpload() {
+    MediaUpload(file).then(url => {
+      toast.success("File uploaded successfully: " + url);
+    }).catch(error => {
+      toast.error("Error uploading file: " + error);
+    });
 
-  function increment() {
-    setNumber(number + 1);
-    console.log(number);
-  }
-
- function decrement() {
-   setNumber(number - 1);
-   console.log(number);
   }
   return (
     <div className="w-full h-screen flex flex-col justify-center items-center">
-      <span className="text-3xl font-bold">{number}</span>
-      <div className="w-full flex justify-center items-center"> 
+      <input type="file" onChange={
+        (e) => {
+          setFile(e.target.files[0]);
+        }
+      } />
+      <button onClick={handleFileUpload} className="bg-gray-700 text-white p-2 rounded-lg ">Upload File</button>
 
-        <button onClick={increment} className="bg-blue-500 text-white p-2 rounded w-[60px] cursor-pointer">+</button>
-        <button onClick={decrement} className="bg-blue-500 text-white p-2 rounded w-[60px] cursor-pointer">-</button>
-
-
-      </div>
-        
     </div>
 
   );
