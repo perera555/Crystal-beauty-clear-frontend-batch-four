@@ -3,6 +3,7 @@ import { FaFileInvoice, FaUsers } from "react-icons/fa6";
 import { MdWarehouse } from "react-icons/md";
 import AdminProductsPage from "./admin/products";
 import AddProductPage from "./addProductForm";
+import EditProductForm from "./admin/editProduct";
 
 export default function AdminPage() {
     return (
@@ -20,6 +21,7 @@ export default function AdminPage() {
                     <Route path="/orders" element={<h1>Orders</h1>} />
                     <Route path="/users" element={<h1>Users</h1>} />
                     <Route path="/addProduct" element={<AddProductPage/>} />
+                    <Route path="/editProduct" element={<EditProductForm/>} />
                 </Routes>
 
             </div>
