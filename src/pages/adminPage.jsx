@@ -4,6 +4,7 @@ import { MdWarehouse } from "react-icons/md";
 import AdminProductsPage from "./admin/products";
 import AddProductPage from "./addProductForm";
 import EditProductForm from "./admin/editProduct";
+import AdminOrders from "./admin/adminOrders";
 
 export default function AdminPage() {
     return (
@@ -18,7 +19,7 @@ export default function AdminPage() {
             <div className="h-full bg-white w-[calc(100vw-300px)] rounded-lg">
                 <Routes path="/*">
                     <Route path="/products" element={<AdminProductsPage/>} />
-                    <Route path="/orders" element={<h1>Orders</h1>} />
+                    <Route path="/orders" element={<AdminOrders/>} />
                     <Route path="/users" element={<h1>Users</h1>} />
                     <Route path="/addProduct" element={<AddProductPage/>} />
                     <Route path="/editProduct" element={<EditProductForm/>} />
