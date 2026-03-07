@@ -42,12 +42,15 @@ export default function ProductOverview() {
             }
             {
                 status == "loaded" &&
-                <div className="w-full h-full flex">
-                    <div className="w-[50%] h-full ">
+                <div className="w-full h-full flex flex-col lg:flex-row">
+                    <h1 className=" text-3xl lg:hidden font-semibold text-center mb-[40px] ">{product.name}{" | "} <span className="text-3xl mr-4 text-gray-500"  >{product.altNames.join(" | ")}</span></h1>
+                        <h2 className="text-3xl mr-4"></h2>
+                    <div className="w-full lg:h-full lg:w-[50%]  ">
+
                         <ImageSlider images={product.images} />
                     </div>
-                    <div className="w-[50%] h-full justify-center p-[40px]">
-                        <h1 className="text-3xl font-semibold text-center mb-[40px] ">{product.name}{" | "} <span className="text-3xl mr-4 text-gray-500"  >{product.altNames.join(" | ")}</span></h1>
+                    <div className="w-full lg:w-[50%] h-full pt-[100px] justify-center p-[40px]">
+                        <h1 className="hidden lg:block text-3xl font-semibold text-center mb-[40px] ">{product.name}{" | "} <span className="text-3xl mr-4 text-gray-500"  >{product.altNames.join(" | ")}</span></h1>
                         <h2 className="text-3xl mr-4"></h2>
                         <div className="w-full flex justify-center mb-[40px] ">
                             {product.labeledPrice > product.price ? (
