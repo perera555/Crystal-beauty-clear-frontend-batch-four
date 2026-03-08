@@ -4,7 +4,7 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { useState } from "react";
 
 export default function Header() {
-    const [isopen, setIsOpen] = useState(true)
+    const [isopen, setIsOpen] = useState(false)
     return (
         <header className="h-[70px] w-full flex justify-start items-center bg-gray-100 relative ">
             <RxHamburgerMenu className=" lg:hidden text-3xl text-accent mx-4" onClick={()=>{
@@ -22,7 +22,7 @@ export default function Header() {
             </div>
             {
                 isopen && (
-                    <div className="fixed top-0 left-0 z-[9999] bg-[#00000060] w-full h-screen flex">
+                    <div className="fixed lg:hidden top-0 left-0 z-[9999] bg-[#00000060] w-full h-screen flex">
                         <div className="w-[300px] h-full bg-white  flex flex-col justify-start items-start">
                             <RxHamburgerMenu className="text-3xl text-accent " onClick={() => {
                                 setIsOpen(false)
