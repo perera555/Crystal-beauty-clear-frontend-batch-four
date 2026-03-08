@@ -1,4 +1,5 @@
 export default function ForgetPassword(){
+    return(
     <div className="w-full h-screen bg-gray-200 flex p-2">
         <div className="w-full h-full flex items-center justify-center">
             <div className="bg-white p-4 rounded shadow-md w-[400px]">
@@ -18,6 +19,6 @@ export default function ForgetPassword(){
         </div>
 
     </div>
-
+    )
 
 }
