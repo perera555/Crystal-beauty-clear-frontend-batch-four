@@ -33,14 +33,14 @@ export default function ForgetPassword(){
 
 
 
-    function resetPassword(){
+    function changePassword(){
 
         if(password !== confirmpassword){
             toast.error("Passwords do not match")
             return
         }
 
-        axios.post(import.meta.env.VITE_BACKEND_URL + "/api/user/resetPassword",{
+        axios.post(import.meta.env.VITE_BACKEND_URL + "/api/user/changepassword",{
             email:email,
             otp:otp,
             password:password
@@ -48,10 +48,13 @@ export default function ForgetPassword(){
 
         .then(()=>{
             toast.success("Password Reset Successfully")
+            window.location.href ="/login"
         })
 
         .catch(()=>{
             toast.error("Reset Failed")
+            window.location.reload();
+
         })
 
     }
@@ -113,7 +116,7 @@ export default function ForgetPassword(){
 
 
                 <button
-                onClick={resetPassword}
+                onClick={changePassword}
                 className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
                 >
                 Reset Password

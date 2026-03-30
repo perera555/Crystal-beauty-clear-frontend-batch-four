@@ -2,121 +2,135 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import toast from "react-hot-toast"
 import { useNavigate, useParams } from "react-router-dom"
+
 import Loader from "../../components/loader"
 import ImageSlider from "../../components/imageSlider"
+import Header from "../../components/header" // ✅ added
 import { addToCart } from "../../utilis/cart"
 
 export default function ProductOverview() {
 
-    const params = useParams()
-    if (params.id == null) {
-        window.location.href = "/products"
-    }
-    const [product, setProduct] = useState(null)
-    const [status, setStatus] = useState("loading")
-    const navigate = useNavigate()
+  const { id } = useParams()
+  const navigate = useNavigate()
 
-    useEffect(
-        () => {
-            if (status == "loading") {
-                axios.get(import.meta.env.VITE_BACKEND_URL + "/api/product/" + params.id).then(
-                    (res) => {
-                        console.log(res)
-                        setProduct(res.data.product)
-                        setStatus("loaded")
+  const [product, setProduct] = useState(null)
+  const [status, setStatus] = useState("loading")
 
-                    }
-                ).catch(() => {
-                    toast.error("Product is not available")
-                    setStatus("error")
-                })
-            }
-        }, [status]
+  useEffect(() => {
 
-    )
+    axios
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/product/" + id)
+      .then((res) => {
 
+        setProduct(res.data.product)
+        setStatus("loaded")
+
+      })
+      .catch((err) => {
+
+        console.log(err)
+        toast.error("Product not found")
+        setStatus("error")
+
+      })
+
+  }, [id])
+
+  if (status === "loading") {
     return (
-        <div className="w-full h-full">
-            {
-                status == "loading" && <Loader />
-            }
-            {
-                status == "loaded" &&
-                <div className="w-full h-full flex flex-col lg:flex-row">
-                    <h1 className=" text-3xl lg:hidden font-semibold text-center mb-[40px] ">{product.name}{" | "} <span className="text-3xl mr-4 text-gray-500"  >{product.altNames.join(" | ")}</span></h1>
-                        <h2 className="text-3xl mr-4"></h2>
-                    <div className="w-full lg:h-full lg:w-[50%]  ">
+      <>
+        <Header /> {/* ✅ Header added */}
+        <div className="w-full flex justify-center mt-20">
+          <Loader />
+        </div>
+      </>
+    )
+  }
 
-                        <ImageSlider images={product.images} />
-                    </div>
-                    <div className="w-full lg:w-[50%] h-full pt-[100px] justify-center p-[40px]">
-                        <h1 className="hidden lg:block text-3xl font-semibold text-center mb-[40px] ">{product.name}{" | "} <span className="text-3xl mr-4 text-gray-500"  >{product.altNames.join(" | ")}</span></h1>
-                        <h2 className="text-3xl mr-4"></h2>
-                        <div className="w-full flex justify-center mb-[40px] ">
-                            {product.labeledPrice > product.price ? (
-                                <>
-                                    <h2 className="text-2xl mr-[20px]"> LKR:{product.price.toFixed(2)}</h2>
-                                    <h2 className="text-2xl line-through text-gray-500">
-                                        LKR:{product.labeledPrice.toFixed(2)}</h2>
+  if (status === "error") {
+    return (
+      <>
+        <Header /> {/* ✅ Header added */}
+        <div className="w-full flex justify-center mt-20">
+          <h1 className="text-2xl text-red-500">Error loading product</h1>
+        </div>
+      </>
+    )
+  }
 
+  return (
+    <>
+      <Header /> {/* ✅ Header added */}
 
-                                </>
-                            ) : (
-                                <h2 className="text-3xl font-semibold text-center text-gray-500">{product.price}</h2>
-                            )}
+      <div className="w-full flex flex-col lg:flex-row">
 
-                        </div>
+        {/* PRODUCT IMAGE */}
+        <div className="lg:w-1/2">
+          <ImageSlider images={product.images} />
+        </div>
 
-                        <p className="text-xl text-center text-gray-500 mb-[40px]">{product.description}</p>
-                        <div className="w-full flex justify-center mb-[40px]">
-                            <button className="bg-pink-800 border border-pink-800 text-white w-[200px] h-[50px] rounded-lg hover:bg-white hover:text-pink-800 transition-all duration-300 ease-in-out cursor-pointer" onClick={
-                                () => {
-                                    addToCart(product, 1)
-                                    toast.success("Product added to cart")
+        {/* PRODUCT DETAILS */}
+        <div className="lg:w-1/2 p-10">
 
-                                }}>Add to Cart</button>
-                            <button onClick={() => {
-                                navigate("/checkout", {
-                                    state: {
-                                        items: [
-                                            {
-                                                productId: product.productId,
-                                                name: product.name,
-                                                altNames: product.altNames,
-                                                price: product.price,
-                                                labeledPrice: product.labeledPrice,
-                                                image: product.images[0],
-                                                quantity: 1
+          <h1 className="text-3xl font-bold mb-6">
+            {product.name}
+          </h1>
 
-                                            }
+          <p className="text-gray-500 mb-6">
+            {product.description}
+          </p>
 
+          <h2 className="text-2xl mb-6 text-pink-700 font-semibold">
+            LKR {product.price}
+          </h2>
 
+          <div className="flex gap-4 flex-wrap">
 
-                                        ]
+            <button
+              className="bg-pink-700 text-white px-6 py-3 rounded hover:bg-pink-800 transition"
+              onClick={() => {
+                addToCart(product, 1)
+                toast.success("Added to cart")
+              }}
+            >
+              Add To Cart
+            </button>
 
+            <button
+              className="bg-pink-700 text-white px-6 py-3 rounded hover:bg-pink-800 transition"
+              onClick={() => {
+                navigate("/checkout", {
+                  state: {
+                    items: [
+                      {
+                        productId: product._id,
+                        name: product.name,
+                        price: product.price,
+                        image: product.images[0],
+                        quantity: 1
+                      }
+                    ]
+                  }
+                })
+              }}
+            >
+              Buy Now
+            </button>
 
-                                    }
-                                })
+            <button
+              className="border border-pink-700 text-pink-700 px-6 py-3 rounded hover:bg-pink-700 hover:text-white transition"
+              onClick={() => {
+                navigate(`/reviews/${product._id}`)
+              }}
+            >
+              Reviews
+            </button>
 
-                            }} className="bg-pink-800 border border-pink-800 text-white w-[200px] h-[50px] rounded-lg hover:bg-white hover:text-pink-800 transition-all duration-300 ease-in-out ml-[20px] cursor-pointer">
-                                Buy Now</button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            }
-            {
-                status == "error" && <div>
-                    Error
-
-                </div>
-            }
+          </div>
 
         </div>
 
-
-
-    )
+      </div>
+    </>
+  )
 }

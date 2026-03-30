@@ -5,63 +5,112 @@ import { useState } from "react";
 import UserData from "./userData";
 
 export default function Header() {
-    const [isopen, setIsOpen] = useState(false)
+
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <header className="h-[70px] w-full flex justify-start items-center bg-gray-100 relative ">
-            <RxHamburgerMenu
-                className=" lg:hidden text-3xl text-accent mx-4"
-                onClick={() => {
-                    setIsOpen(true)
-                }}
-            />
 
-            {/* Desktop Navbar */}
-            <div className="hidden lg:flex w-full h-full items-center justify-center text-accent text-xl relative">
+        <header className="fixed top-0 z-50 h-[70px] w-full flex items-center justify-between px-4 bg-primary text-white shadow-md">
 
-                {/* Navbar Links */}
-                <div className="flex w-[500px] h-full items-center justify-evenly">
-                    <Link to="/">HOME</Link>
-                    <Link to="/products">PRODUCTS</Link>
-                    <Link to="/about">ABOUT</Link>
-                    <Link to="/contact">CONTACT</Link>
-                    <Link to="/reviews">REVIEWS</Link>
-                </div>
+            {/* LEFT - Hamburger + Logo */}
+            <div className="flex items-center gap-3">
 
-                {/* User Data */}
-                <div className="absolute right-[90px] h-full flex items-center">
-                    <UserData />
-                </div>
+                <button
+                    className="lg:hidden text-3xl"
+                    onClick={() => setIsOpen(true)}
+                >
+                    <RxHamburgerMenu />
+                </button>
 
-                {/* Cart Icon */}
-                <Link to="/cart" className="absolute right-[30px] text-3xl">
+                <Link to="/" className="flex items-center gap-2">
+                    <img
+                        src="/logo.png"
+                        alt="Crystal Beauty Clear"
+                        className="h-[40px]"
+                    />
+                    <span className="hidden md:block text-lg font-semibold">
+                        Crystal Beauty Clear
+                    </span>
+                </Link>
+
+            </div>
+
+            {/* DESKTOP NAV */}
+            <div className="hidden lg:flex gap-8 font-medium">
+                <Link to="/" className="hover:text-accent">Home</Link>
+                <Link to="/products" className="hover:text-accent">Products</Link>
+                <Link to="/about" className="hover:text-accent">About</Link>
+                <Link to="/contact" className="hover:text-accent">Contact</Link>
+                <Link to="/reviews" className="hover:text-accent">Reviews</Link>
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex items-center gap-5">
+                <UserData />
+
+                <Link to="/cart" className="text-2xl hover:text-accent">
                     <BsCart4 />
                 </Link>
             </div>
 
-            {/* Mobile Menu */}
-            {
-                isopen && (
-                    <div className="fixed lg:hidden top-0 left-0 z-[9999] bg-[#00000060] w-full h-screen flex">
-                        <div className="w-[300px] h-full bg-white flex flex-col justify-start items-start">
-                            <RxHamburgerMenu
-                                className="text-3xl text-accent"
-                                onClick={() => {
-                                    setIsOpen(false)
-                                }}
-                            />
+            {/* OVERLAY */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
 
-                            <Link to="/" className="text-xl text-accent my-4">HOME</Link>
-                            <Link to="/products" className="text-xl text-accent my-4">PRODUCTS</Link>
-                            <Link to="/about" className="text-xl text-accent my-4">ABOUT</Link>
-                            <Link to="/contact" className="text-xl text-accent my-4">CONTACT</Link>
-                            <Link to="/reviews" className="text-xl text-accent my-4">REVIEWS</Link>
-                            <Link to="/cart" className="text-xl text-accent my-4">Cart</Link>
-                        </div>
-                    </div>
-                )
-            }
+            {/* MOBILE SIDEBAR */}
+            <div className={`fixed top-0 left-0 h-full w-[260px] bg-white text-secondary z-50 p-6 flex flex-col
+                transform transition-transform duration-300
+                ${isOpen ? "translate-x-0" : "-translate-x-full"}`}>
+
+                <button
+                    className="text-lg mb-6 text-left"
+                    onClick={() => setIsOpen(false)}
+                >
+                    ✕ Close
+                </button>
+
+                {/* MENU LINKS */}
+                <Link to="/" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    Home
+                </Link>
+
+                <Link to="/products" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    Products
+                </Link>
+
+                <Link to="/about" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    About
+                </Link>
+
+                <Link to="/contact" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    Contact
+                </Link>
+
+                <Link to="/reviews" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    Reviews
+                </Link>
+
+                <Link to="/cart" onClick={() => setIsOpen(false)}
+                    className="py-3 px-3 rounded-md transition duration-200 hover:bg-primary hover:text-white">
+                    Cart
+                </Link>
+
+                {/* ✅ USER SECTION (LOGOUT FIX) */}
+                <div className="mt-6 border-t pt-4">
+                    <UserData />
+                </div>
+
+            </div>
 
         </header>
-    )
+    );
 }

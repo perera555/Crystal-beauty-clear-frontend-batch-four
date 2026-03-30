@@ -12,13 +12,14 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
     const loginWithGoogle = useGoogleLogin({
         onSuccess: (res) => {
 
             setLoading(true);
 
-            axios.post(import.meta.env.VITE_BACKEND_URL + "/api/user/google", {
+            axios.post(`${BASE_URL}/api/users/google`, {
                 accessToken: res.access_token
             })
             .then((response) => {
@@ -36,25 +37,21 @@ export default function LoginPage() {
                     navigate("/");
                 }
 
-                setLoading(false);
-
             })
             .catch(() => {
                 toast.error("Google login failed");
-                setLoading(false);
-            });
-
+            })
+            .finally(() => setLoading(false));
         }
     });
-
 
     function handleLogin() {
 
         setLoading(true);
 
-        axios.post(import.meta.env.VITE_BACKEND_URL + "/api/user/login", {
-            email: email,
-            password: password
+        axios.post(`${BASE_URL}/api/users/login`, {
+            email,
+            password
         })
         .then(response => {
 
@@ -71,15 +68,11 @@ export default function LoginPage() {
                 navigate("/");
             }
 
-            setLoading(false);
-
         })
         .catch(error => {
-
             toast.error(error.response?.data?.message || "Login failed");
-            setLoading(false);
-
-        });
+        })
+        .finally(() => setLoading(false));
     }
 
     return (
@@ -107,13 +100,13 @@ export default function LoginPage() {
 
                     <button
                         onClick={handleLogin}
-                        className="w-[400px] h-[50px] bg-green-500 rounded-xl text-white cursor-pointer"
+                        className="w-[400px] h-[50px] bg-green-500 rounded-xl text-white"
                     >
                         {loading ? "Loading..." : "LOGIN"}
                     </button>
 
                     <button
-                        className="w-[400px] h-[50px] bg-green-500 mt-[20px] rounded-xl text-white cursor-pointer flex justify-center items-center"
+                        className="w-[400px] h-[50px] bg-green-500 mt-[20px] rounded-xl text-white flex justify-center items-center"
                         onClick={loginWithGoogle}
                     >
                         <GrGoogle className="mr-[10px]" />
@@ -122,23 +115,16 @@ export default function LoginPage() {
 
                     <p className="text-sm mt-4 text-gray-600">
                         Don't have an account?{" "}
-                        <span className="text-green-500 cursor-pointer">
-                            <Link to={"/register"}>Register Now</Link>
-                        </span>
-                    </p>
-                     <p className="text-sm mt-4 text-gray-600">
-                        Forget Your Password?{" "}
-                        <span className="text-green-500 cursor-pointer">
-                            <Link to={"/forget"}>Reset Password</Link>
-                        </span>
+                        <Link to="/register" className="text-green-500">Register Now</Link>
                     </p>
 
-
+                    <p className="text-sm mt-4 text-gray-600">
+                        Forgot Password?{" "}
+                        <Link to="/forget" className="text-green-500">Reset Password</Link>
+                    </p>
 
                 </div>
-
             </div>
-
         </div>
     );
 }

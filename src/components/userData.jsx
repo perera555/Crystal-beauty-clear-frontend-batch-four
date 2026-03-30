@@ -3,30 +3,61 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function UserData() {
+
     const [user, setUser] = useState(null);
+
     const token = localStorage.getItem("token");
 
     useEffect(() => {
 
-        if (token != null) {
-            axios.get(import.meta.env.VITE_BACKEND_URL + "/api/user/current", {
-                headers: {
-                    Authorization: "Bearer " + token
-                }
-            }).then((response) => {
-                console.log("API Response:", response.data);
-                setUser(response.data.user);
-            }).catch((e) => {
-                console.log("Error:", e);
-                setUser(null);
-            });
+        // do not call API if token not available
+        if (!token) {
+            setUser(null);
+            return;
         }
 
-    }, []);
+        const fetchUser = async () => {
+
+            try {
+
+                const response = await axios.get(
+                    import.meta.env.VITE_BACKEND_URL + "/api/user/current",
+                    {
+                        headers: {
+                            Authorization: "Bearer " + token
+                        }
+                    }
+                );
+
+                if (response.data && response.data.user) {
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
+
+            } catch (error) {
+
+                // token invalid or route not found
+                console.log("User fetch failed");
+
+                localStorage.removeItem("token");
+                setUser(null);
+
+            }
+
+        };
+
+        fetchUser();
+
+    }, [token]);
+
 
     return (
+
         <div className="flex items-center gap-3">
+
             {user == null ? (
+
                 <>
                     <Link
                         to="/login"
@@ -42,8 +73,11 @@ export default function UserData() {
                         Register
                     </Link>
                 </>
+
             ) : (
-                <div className="h-full flex justify-center items-center flex-row gap-3">
+
+                <div className="h-full flex items-center gap-3">
+
                     <span className="text-sm font-medium">
                         {user.name}
                     </span>
@@ -51,15 +85,24 @@ export default function UserData() {
                     <button
                         className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition"
                         onClick={() => {
+
                             localStorage.removeItem("token");
+
                             setUser(null);
-                            window.location = "/login";
+
+                            window.location.href = "/login";
+
                         }}
                     >
                         Logout
                     </button>
+
                 </div>
+
             )}
+
         </div>
+
     );
+
 }
