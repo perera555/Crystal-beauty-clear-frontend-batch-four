@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom"
 
 import Loader from "../../components/loader"
 import ImageSlider from "../../components/imageSlider"
-import Header from "../../components/header" // ✅ added
+import Header from "../../components/header"
 import { addToCart } from "../../utilis/cart"
 
 export default function ProductOverview() {
@@ -21,6 +21,11 @@ export default function ProductOverview() {
     axios
       .get(import.meta.env.VITE_BACKEND_URL + "/api/product/" + id)
       .then((res) => {
+
+        // ✅ Ensure product exists
+        if (!res.data || !res.data.product) {
+          throw new Error("Product not found")
+        }
 
         setProduct(res.data.product)
         setStatus("loaded")
@@ -39,7 +44,7 @@ export default function ProductOverview() {
   if (status === "loading") {
     return (
       <>
-        <Header /> {/* ✅ Header added */}
+        <Header />
         <div className="w-full flex justify-center mt-20">
           <Loader />
         </div>
@@ -47,10 +52,10 @@ export default function ProductOverview() {
     )
   }
 
-  if (status === "error") {
+  if (status === "error" || !product) {
     return (
       <>
-        <Header /> {/* ✅ Header added */}
+        <Header />
         <div className="w-full flex justify-center mt-20">
           <h1 className="text-2xl text-red-500">Error loading product</h1>
         </div>
@@ -60,13 +65,13 @@ export default function ProductOverview() {
 
   return (
     <>
-      <Header /> {/* ✅ Header added */}
+      <Header />
 
       <div className="w-full flex flex-col lg:flex-row">
 
         {/* PRODUCT IMAGE */}
         <div className="lg:w-1/2">
-          <ImageSlider images={product.images} />
+          <ImageSlider images={product.images || []} />
         </div>
 
         {/* PRODUCT DETAILS */}
@@ -106,7 +111,8 @@ export default function ProductOverview() {
                         productId: product._id,
                         name: product.name,
                         price: product.price,
-                        image: product.images[0],
+                        // ✅ SAFE IMAGE ACCESS
+                        image: product.images?.[0] || "",
                         quantity: 1
                       }
                     ]
